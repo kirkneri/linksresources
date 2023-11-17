@@ -261,8 +261,11 @@
   transition-duration: 0.3s;
 }
 
-/* ================Font=============== */
+/* ================Body Style=============== */
 
 body {
   font-family: 'Cascadia Code', monospace, 'Source Code Pro';
+}
+.bg-custom {
+  background-color: #00080a;
 }
