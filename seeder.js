@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 const Links = require('./models/links')
 
-mongoose.connect('mongodb://localhost:27017/linksResource')
+mongoose.connect('mongodb+srv://devkirkbugayong:qwerty123@kodego.btziqza.mongodb.net/linksResource')
 
 const links = [{
     name: "Font Awesome",
