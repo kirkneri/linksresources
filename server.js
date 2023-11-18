@@ -6,8 +6,7 @@ const methodOverride = require('method-override')
 const port = 8080
 const Links = require('./models/links')
 
-
-mongoose.connect('mongodb://localhost:27017/linksResource')
+mongoose.connect('mongodb+srv://devkirkbugayong:qwerty123@kodego.btziqza.mongodb.net/linksResource')
 .then(() => {
     console.log('MongoDB connection established.')
 }) .catch((err) => {
