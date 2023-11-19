@@ -12,7 +12,10 @@ const linksSchema = new mongoose.Schema({
     icon: {
         type: String,
     },
-});
+    category: {
+        type: String,
+    },
+})
 
 const Links = mongoose.model('Link', linksSchema)
 
