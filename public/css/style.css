@@ -270,15 +270,6 @@ body {
   background-color: #00080a;
 }
 
-.scrollbar::-webkit-scrollbar {
-  display: none;
-}
-
-.scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;  
-}
-
 /* =====================Delete Card================ */
 .delete-card {
   width: 300px;

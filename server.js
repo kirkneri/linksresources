@@ -76,9 +76,18 @@ app.put('/:id', async (req, res) => {
 //Delete
 app.delete('/:id', async (req, res) => {
     const { id } = req.params;
-    await Links.findByIdAndDelete(id, req.body);
-    res.redirect('/');
-});
+    console.log('Deleting link with ID:', id);
+  
+    try {
+      const deletedLink = await Links.findByIdAndDelete(id);
+      console.log('Deleted Link:', deletedLink); // Check the deleted link (if needed)
+      res.redirect('/');
+    } catch (error) {
+      console.error(error);
+      res.status(500).send('Error deleting the link');
+    }
+  });
+  
 
 // PORT
 app.listen(port, () => {
