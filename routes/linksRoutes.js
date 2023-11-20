@@ -23,19 +23,20 @@ router.get('/', async (req, res) => {
 
 // Display all resources
 router.get('/resources', async (req, res) => {
+  const { category } = req.params;
   try {
-    const links = await Links.find({});
-    res.render('links/resources', { links });
+    const links = await Links.find({ category });
+    res.render('links/resources', { links, selectedCategory: category });
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error retrieving links');
+    res.status(500).send('Error retrieving categories');
   }
 });
 
 
 // Add item with fetching favicon
 router.post('/', async (req, res) => {
-  const { name, link } = req.body;
+  const { name, link, category } = req.body;
   let iconURL = 'https://i.postimg.cc/KvMQdmMb/OIG.jpg'; // Default icon URL
 
   try {
@@ -51,13 +52,22 @@ router.post('/', async (req, res) => {
       name,
       link,
       icon: iconURL,
+      category,
     });
 
     await newLink.save();
     res.redirect('/resources');
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error adding link');
+    const newLink = new Links({
+      name,
+      link,
+      icon: 'https://i.postimg.cc/KvMQdmMb/OIG.jpg',
+      category,
+    });
+
+    await newLink.save();
+    res.redirect('/resources');
   }
 });
 
@@ -69,7 +79,12 @@ router.get('/edit/:slug', async (req, res) => {
     res.render('links/edit', { updateLink });
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error finding link to edit');
+    const newLink = new Links({
+      name,
+      link,
+      icon: 'https://i.postimg.cc/KvMQdmMb/OIG.jpg',
+      category,
+    });
   }
 });
 
@@ -83,6 +98,7 @@ router.put('/:slug', async (req, res) => {
       name: req.body.name,
       link: req.body.link,
       icon: updatedIcon,
+      category: req.body.category,
     };
 
     await Links.findOneAndUpdate({ slug }, updatedLink, { runValidators: true, new: true });

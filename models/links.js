@@ -15,7 +15,6 @@ const linksSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['Frontend', 'Backend']
     },
     slug: {
         type: String,
