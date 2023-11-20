@@ -1,0 +1,35 @@
+<!-- Add Modal -->
+<div class="modal fade" id="addItem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="addItem">Add a Resource</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="/" method="POST">
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control rounded-3" id="name" name="name" placeholder="Name">
+            <label for="name">Name</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control rounded-3" id="link" name="link" placeholder="URL">
+            <label for="link">URL</label>
+          </div>
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control rounded-3" id="icon" name="icon" placeholder="Image URL">
+            <label for="icon">Image URL</label>
+          </div>
+          <div class="btn-group d-flex justify-content-between mb-2" role="group">
+            <input type="checkbox" class="btn-check" id="Frontend" name="Frontend">
+            <label class="btn btn-outline-dark" for="Frontend">Frontend</label>
+          
+            <input type="checkbox" class="btn-check" id="Backend" name="Backend">
+            <label class="btn btn-outline-dark" for="Backend">Backend</label>
+          </div>
+          <button class="w-100 mb-2 btn btn-lg rounded-3 btn-dark" type="submit">Add Link</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

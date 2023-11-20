@@ -21,6 +21,18 @@ router.get('/', async (req, res) => {
   }
 });
 
+// Display all resources
+router.get('/resources', async (req, res) => {
+  try {
+    const links = await Links.find({});
+    res.render('links/resources', { links });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error retrieving links');
+  }
+});
+
+
 // Add item with fetching favicon
 router.post('/', async (req, res) => {
   const { name, link } = req.body;
@@ -42,7 +54,7 @@ router.post('/', async (req, res) => {
     });
 
     await newLink.save();
-    res.redirect('/');
+    res.redirect('/resources');
   } catch (error) {
     console.error(error);
     res.status(500).send('Error adding link');
@@ -50,47 +62,50 @@ router.post('/', async (req, res) => {
 });
 
 //Update item
-app.get('/edit/:id', async (req, res) => {
-    const { id } = req.params;
-    const updateLink = await Links.findById(id);
-    res.render('links/edit', { updateLink: updateLink })
-})
-
-app.put('/:id', async (req, res) => {
-    const { id } = req.params;
-
-    try {
-        const existingLink = await Links.findById(id);
-        const updatedIcon = req.body.icon ? req.body.icon : existingLink.icon;
-
-        const updatedLink = {
-            name: req.body.name,
-            link: req.body.link,
-            icon: updatedIcon,
-        };
-
-        await Links.findByIdAndUpdate(id, updatedLink, { runValidators: true, new: true });
-        res.redirect('/');
-    } catch (error) {
-        // Handle the error appropriately
-        console.error(error);
-        res.status(500).send('Error updating the link');
-    }
+router.get('/edit/:slug', async (req, res) => {
+  const { slug } = req.params;
+  try {
+    const updateLink = await Links.findOne({ slug });
+    res.render('links/edit', { updateLink });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error finding link to edit');
+  }
 });
 
-//Delete
-app.delete('/:id', async (req, res) => {
-    const { id } = req.params;
-    console.log('Deleting link with ID:', id);
-  
-    try {
-      const deletedLink = await Links.findByIdAndDelete(id);
-      console.log('Deleted Link:', deletedLink); // Check the deleted link (if needed)
-      res.redirect('/');
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Error deleting the link');
-    }
+router.put('/:slug', async (req, res) => {
+  const { slug } = req.params;
+  try {
+    const existingLink = await Links.findOne({ slug });
+    const updatedIcon = req.body.icon ? req.body.icon : existingLink.icon;
+
+    const updatedLink = {
+      name: req.body.name,
+      link: req.body.link,
+      icon: updatedIcon,
+    };
+
+    await Links.findOneAndUpdate({ slug }, updatedLink, { runValidators: true, new: true });
+    res.redirect('/');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error updating the link');
+  }
+});
+
+// Delete
+router.delete('/:slug', async (req, res) => {
+  const { slug } = req.params;
+  console.log('Deleting link with slug:', slug);
+
+  try {
+    const deletedLink = await Links.findOneAndDelete({ slug });
+    console.log('Deleted Link:', deletedLink); // Check the deleted link (if needed)
+    res.redirect('/');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Error deleting the link');
+  }
 });
 
 module.exports = router;
