@@ -4,11 +4,12 @@ const axios = require('axios');
 const { URL } = require('url');
 const Links = require('../models/links');
 
-// Function to extract domain without protocol and "www"
+// Extract domain
 const extractDomain = (url) => {
   const parsedUrl = new URL(url);
   return parsedUrl.hostname.replace(/^www\./, '');
 };
+
 
 // Display links
 router.get('/', async (req, res) => {
@@ -21,15 +22,24 @@ router.get('/', async (req, res) => {
   }
 });
 
+
 // Display all resources
 router.get('/resources', async (req, res) => {
-  const { category } = req.params;
   try {
-    const links = await Links.find({ category });
-    res.render('links/resources', { links, selectedCategory: category });
+  const { category } = req.query;
+    let links;
+    if (category && category.length > 0) {
+      links = await Links.find({ category: { $in: Array.isArray(category) ? category : [category] } });
+    } else {
+      links = await Links.find({});
+    }
+
+    const allCategories = await Links.distinct('category');
+
+    res.render('links/resources', { links, selectedCategory: category, allCategories });
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error retrieving categories');
+    res.status(500).send('Error retrieving resources.');
   }
 });
 
@@ -38,6 +48,7 @@ router.get('/resources', async (req, res) => {
 router.post('/', async (req, res) => {
   const { name, link, category } = req.body;
   let iconURL = 'https://i.postimg.cc/KvMQdmMb/OIG.jpg'; // Default icon URL
+  const categories = Array.isArray(req.body.category) ? req.body.category : [req.body.category];
 
   try {
     const domain = extractDomain(link);
@@ -52,7 +63,7 @@ router.post('/', async (req, res) => {
       name,
       link,
       icon: iconURL,
-      category,
+      category: categories,
     });
 
     await newLink.save();
@@ -63,7 +74,7 @@ router.post('/', async (req, res) => {
       name,
       link,
       icon: 'https://i.postimg.cc/KvMQdmMb/OIG.jpg',
-      category,
+      category: categories,
     });
 
     await newLink.save();
@@ -74,6 +85,8 @@ router.post('/', async (req, res) => {
 //Update item
 router.get('/edit/:slug', async (req, res) => {
   const { slug } = req.params;
+  const categories = Array.isArray(req.body.category) ? req.body.category : [req.body.category];
+
   try {
     const updateLink = await Links.findOne({ slug });
     res.render('links/edit', { updateLink });
@@ -83,13 +96,14 @@ router.get('/edit/:slug', async (req, res) => {
       name,
       link,
       icon: 'https://i.postimg.cc/KvMQdmMb/OIG.jpg',
-      category,
+      category: categories,
     });
   }
 });
 
 router.put('/:slug', async (req, res) => {
   const { slug } = req.params;
+  const categories = Array.isArray(req.body.category) ? req.body.category : [req.body.category];
   try {
     const existingLink = await Links.findOne({ slug });
     const updatedIcon = req.body.icon ? req.body.icon : existingLink.icon;
@@ -98,7 +112,7 @@ router.put('/:slug', async (req, res) => {
       name: req.body.name,
       link: req.body.link,
       icon: updatedIcon,
-      category: req.body.category,
+      category: categories,
     };
 
     await Links.findOneAndUpdate({ slug }, updatedLink, { runValidators: true, new: true });

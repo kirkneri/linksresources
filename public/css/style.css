@@ -261,7 +261,7 @@
   transition-duration: 0.3s;
 }
 
-/* ================Body Style=============== */
+/* ================Body Style/ETC=============== */
 
 body {
   font-family: 'Cascadia Code', monospace, 'Source Code Pro';
@@ -269,6 +269,10 @@ body {
 .bg-custom {
   background-color: #00080a;
 }
+.resources-style {
+  margin-top: 80px;
+}
+
 
 /* =====================Delete Card================ */
 .delete-card {

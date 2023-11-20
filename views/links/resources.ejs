@@ -1,14 +1,18 @@
 <%- include('../partials/head.ejs'); %>
 <%- include('../partials/nav.ejs'); %>
 
-<div class="row mt-5">
-    <div class="col ms-4">
-        <p><a href="/resources/Frontend">Frontend</a></p>
-        <p><a href="/resources/Backend">Backend</a></p>
-    </div>
-    <div class="col-md-10">
-        <%- include('../partials/card.ejs'); %>
-    </div>
+<div class="row resources-style">
+  <div class="col ms-4">
+    <form class="d-flex flex-column-reverse gap-2" action="/resources" method="GET">
+      <% allCategories.forEach(cat => { %>
+        <button class="btn btn-outline-secondary" type="submit" name="category" value="<%= cat %>"><%= cat %></button>
+      <% }) %>
+      <button class="btn btn-outline-secondary" type="submit" name="category" value="">All</button>
+    </form>
+  </div>
+  <div class="col-md-10">
+      <%- include('../partials/card.ejs'); %>
+  </div>
 </div>
 <%- include('../partials/addForm.ejs'); %>
 
