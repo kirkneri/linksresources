@@ -3,6 +3,9 @@ const router = express.Router();
 const axios = require('axios');
 const { URL } = require('url');
 const Links = require('../models/links');
+const axiosRetry = require("axios-retry")
+
+axiosRetry(axios, { retries:3 });
 
 // Extract domain
 const extractDomain = (url) => {
@@ -18,12 +21,12 @@ router.get('/', async (req, res) => {
     res.render('links/main', { links });
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error retrieving links');
+    res.render('links/error');
   }
 });
 
 
-// Display all resources
+// Display all resources and filter
 router.get('/resources', async (req, res) => {
   try {
   const { category } = req.query;
@@ -39,29 +42,40 @@ router.get('/resources', async (req, res) => {
     res.render('links/resources', { links, selectedCategory: category, allCategories });
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error retrieving resources.');
+    res.render('links/error');
   }
 });
 
 
-// Add item with fetching favicon
+// Function to fetch favicon with formatted link
+async function fetchFavicon(link) {
+  try {
+    const domain = extractDomain(link);
+    const formattedLink = link.startsWith('http') ? link : `https://${link}`; // Add http if not present
+
+    const faviconResponse = await axios.get(`https://favicongrabber.com/api/grab/${domain}`);
+
+    if (faviconResponse.data.icons && faviconResponse.data.icons.length > 0) {
+      return faviconResponse.data.icons[0].src; // Return the fetched favicon URL
+    }
+  } catch (error) {
+    console.error('Error fetching favicon:', error);
+  }
+  return 'https://i.postimg.cc/KvMQdmMb/OIG.jpg'; // Default icon URL
+}
+
+// Add item with formatted link and fetching favicon
 router.post('/', async (req, res) => {
-  const { name, link, category } = req.body;
-  let iconURL = 'https://i.postimg.cc/KvMQdmMb/OIG.jpg'; // Default icon URL
+  const { name, link } = req.body;
   const categories = Array.isArray(req.body.category) ? req.body.category : [req.body.category];
 
   try {
-    const domain = extractDomain(link);
-
-    // Fetching favicon using favicongrabber.com
-    const faviconResponse = await axios.get(`https://favicongrabber.com/api/grab/${domain}`);
-    if (faviconResponse.data.icons && faviconResponse.data.icons.length > 0) {
-      iconURL = faviconResponse.data.icons[0].src;
-    }
+    const formattedLink = link.startsWith('http') ? link : `https://${link}`; // Add http if not present
+    const iconURL = await fetchFavicon(formattedLink);
 
     const newLink = new Links({
       name,
-      link,
+      link: formattedLink,
       icon: iconURL,
       category: categories,
     });
@@ -72,7 +86,7 @@ router.post('/', async (req, res) => {
     console.error(error);
     const newLink = new Links({
       name,
-      link,
+      link, 
       icon: 'https://i.postimg.cc/KvMQdmMb/OIG.jpg',
       category: categories,
     });
@@ -85,19 +99,12 @@ router.post('/', async (req, res) => {
 //Update item
 router.get('/edit/:slug', async (req, res) => {
   const { slug } = req.params;
-  const categories = Array.isArray(req.body.category) ? req.body.category : [req.body.category];
-
   try {
     const updateLink = await Links.findOne({ slug });
     res.render('links/edit', { updateLink });
   } catch (error) {
     console.error(error);
-    const newLink = new Links({
-      name,
-      link,
-      icon: 'https://i.postimg.cc/KvMQdmMb/OIG.jpg',
-      category: categories,
-    });
+    res.render('links/error');
   }
 });
 
@@ -119,7 +126,7 @@ router.put('/:slug', async (req, res) => {
     res.redirect('/');
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error updating the link');
+    res.render('links/error');
   }
 });
 
@@ -130,11 +137,11 @@ router.delete('/:slug', async (req, res) => {
 
   try {
     const deletedLink = await Links.findOneAndDelete({ slug });
-    console.log('Deleted Link:', deletedLink); // Check the deleted link (if needed)
-    res.redirect('/');
+    console.log('Deleted Link:', deletedLink);
+    res.redirect('/resources');
   } catch (error) {
     console.error(error);
-    res.status(500).send('Error deleting the link');
+    res.render('links/error');
   }
 });
 

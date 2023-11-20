@@ -3,7 +3,7 @@
 
 <!-- Update Modal -->
 <div class="container mt-5">
-  <a href="/" class="back-button text-decoration-none">
+  <a href="/resources" class="back-button text-decoration-none">
     <i class="svgIcon fa-solid fa-arrow-left"></i>
   </a>
   <div class="row">
@@ -13,12 +13,19 @@
           <label for="name">Name</label>
         </div>
         <div class="col-sm-8 form-floating mb-3">
-          <input type="text" value="<%= updateLink.link %>" class="form-control rounded-3" id="link" name="link" placeholder="URL">
+          <input type="text" value="<%= updateLink.link %>" class="form-control rounded-3" id="link" name="link" placeholder="URL" required>
           <label for="link">URL</label>
         </div>
         <div class="col-sm-8 form-floating mb-3">
           <input type="text" value="<%= updateLink.icon %>" class="form-control rounded-3" id="icon" name="icon" placeholder="Image URL">
           <label for="icon">Image URL</label>
+        </div>
+        <div class="form-check btn-group d-flex justify-content-between mb-2 me-4" aria-required="true">
+          <input type="checkbox" class="btn-check form-check-input" id="frontend" name="category" value="Frontend">
+          <label class="btn btn-outline-dark" for="frontend">Frontend</label>
+        
+          <input type="checkbox" class="btn-check form-check-input" id="backend" name="category" value="Backend">
+          <label class="btn btn-outline-dark" for="backend">Backend</label>
         </div>
           <button class="col-auto mb-2 btn rounded-3 btn-dark" type="submit">Update Link</button>
       </form>
