@@ -7,7 +7,7 @@
     <i class="svgIcon fa-solid fa-arrow-left"></i>
   </a>
   <div class="row">
-    <form action="/<%= updateLink.slug %>?_method=PUT" method="POST" class="d-flex flex-column align-items-center">
+    <form action="/<%= updateLink.slug %>?_method=PUT" method="POST" class="d-flex flex-column align-items-center" onsubmit="return validateCategories()">
         <div class="col-sm-8 form-floating mb-3">
           <input type="text" value="<%= updateLink.name %>" class="form-control rounded-3" id="name" name="name" placeholder="Name">
           <label for="name">Name</label>
@@ -26,6 +26,9 @@
         
           <input type="checkbox" class="btn-check form-check-input" id="backend" name="category" value="Backend">
           <label class="btn btn-outline-dark" for="backend">Backend</label>
+
+          <input type="checkbox" class="btn-check form-check-input" id="others" name="category" value="Others">
+          <label class="btn btn-outline-dark" for="others">Others</label>
         </div>
           <button class="col-auto mb-2 btn rounded-3 btn-dark" type="submit">Update Link</button>
       </form>

@@ -11,7 +11,7 @@ const linksSchema = new mongoose.Schema({
         required: true,
     },
     icon: {
-        type: String,
+        type: Buffer,
     },
     category: {
         type: [String],
@@ -21,7 +21,11 @@ const linksSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true
-    }
+    },
+    isFavorite : {
+        type: Boolean,
+        default: false
+    },
 })
 
 linksSchema.pre('validate', function(next) {

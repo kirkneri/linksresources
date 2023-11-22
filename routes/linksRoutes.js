@@ -7,26 +7,63 @@ const axiosRetry = require("axios-retry")
 
 axiosRetry(axios, { retries:3 });
 
-// Extract domain
+//Extract domain
 const extractDomain = (url) => {
   const parsedUrl = new URL(url);
   return parsedUrl.hostname.replace(/^www\./, '');
 };
 
-
-// Display links
+//Getting favorite links
 router.get('/', async (req, res) => {
   try {
-    const links = await Links.find({});
-    res.render('links/main', { links });
+    const favoriteLinks = await Links.find({ isFavorite: true });
+    res.render('links/main', { favoriteLinks });
   } catch (error) {
     console.error(error);
     res.render('links/error');
   }
 });
 
+//Add to favorites
+router.post('/add-to-favorites/:id', async (req, res) => {
+  const linkId = req.params.id;
 
-// Display all resources and filter
+  try {
+    const linkToAddToFavorites = await Links.findById(linkId);
+    if (linkToAddToFavorites) {
+      linkToAddToFavorites.isFavorite = true;
+      await linkToAddToFavorites.save();
+      res.redirect('/resources');
+    } else {
+      res.render('links/error');
+    }
+  } catch (error) {
+    console.error(error);
+    res.render('links/error');
+  }
+});
+
+//Remove from favorites
+router.post('/remove-from-favorites/:id', async (req, res) => {
+  const linkId = req.params.id;
+
+  try {
+    const linkToRemoveFromFavorites = await Links.findById(linkId);
+    if (linkToRemoveFromFavorites) {
+      linkToRemoveFromFavorites.isFavorite = false;
+      await linkToRemoveFromFavorites.save();
+      res.redirect('/');
+    } else {
+      res.render('links/error');
+    }
+  } catch (error) {
+    console.error(error);
+    res.render('error');
+  }
+});
+
+
+//Display all resources and filter
 router.get('/resources', async (req, res) => {
   try {
   const { category } = req.query;
@@ -47,48 +84,64 @@ router.get('/resources', async (req, res) => {
 });
 
 
-// Function to fetch favicon with formatted link
-async function fetchFavicon(link) {
+//Function to fetch favicon with formatted link
+async function fetchFavicon(link, icon) {
   try {
     const domain = extractDomain(link);
-    const formattedLink = link.startsWith('http') ? link : `https://${link}`; // Add http if not present
+    link = link.startsWith('http') ? link : `https://${link}`; //Add http if not present
 
-    const faviconResponse = await axios.get(`https://favicongrabber.com/api/grab/${domain}`);
+    if (icon && icon !== '') {
+      return icon;
+    } else {
+      const faviconResponse = await axios.get(`https://www.google.com/s2/favicons?domain=${domain}&sz=128`, { responseType: 'arraybuffer' });
 
-    if (faviconResponse.data.icons && faviconResponse.data.icons.length > 0) {
-      return faviconResponse.data.icons[0].src; // Return the fetched favicon URL
+      const faviconURL = Buffer.from(faviconResponse.data, 'binary').toString('base64');
+      return `data:${faviconResponse.headers['content-type']};base64,${faviconURL}`;
     }
   } catch (error) {
     console.error('Error fetching favicon:', error);
+    return 'https://i.postimg.cc/QMTQXH6k/6b112d96-b771-490a-aad2-05fd67e915d2.jpg'; //Default icon URL
   }
-  return 'https://i.postimg.cc/KvMQdmMb/OIG.jpg'; // Default icon URL
 }
 
-// Add item with formatted link and fetching favicon
+//Add item with formatted link and fetching favicon
 router.post('/', async (req, res) => {
-  const { name, link } = req.body;
-  const categories = Array.isArray(req.body.category) ? req.body.category : [req.body.category];
+  const { name, link, isFavorite, category, icon } = req.body;
+  const categories = Array.isArray(category) ? category : [category];
 
   try {
-    const formattedLink = link.startsWith('http') ? link : `https://${link}`; // Add http if not present
-    const iconURL = await fetchFavicon(formattedLink);
+    const formattedLink = link.startsWith('http') ? link : `https://${link}`; //Add http if not present
+    const existingLink = await Links.findOne({ link: formattedLink });
+
+    let iconURL;
+    if (icon && icon !== '') {
+      iconURL = icon;
+    } else if (existingLink && existingLink.icon) {
+      iconURL = existingLink.icon;
+    } else {
+      iconURL = await fetchFavicon(formattedLink);
+    }
 
     const newLink = new Links({
       name,
       link: formattedLink,
       icon: iconURL,
       category: categories,
+      isFavorite: isFavorite === 'on',
     });
 
     await newLink.save();
     res.redirect('/resources');
   } catch (error) {
     console.error(error);
+    const iconURL = await fetchFavicon(link, '');
+
     const newLink = new Links({
       name,
-      link, 
-      icon: 'https://i.postimg.cc/KvMQdmMb/OIG.jpg',
+      link,
+      icon: iconURL,
       category: categories,
+      isFavorite: isFavorite === 'on',
     });
 
     await newLink.save();
@@ -108,29 +161,43 @@ router.get('/edit/:slug', async (req, res) => {
   }
 });
 
+//Update item
 router.put('/:slug', async (req, res) => {
   const { slug } = req.params;
-  const categories = Array.isArray(req.body.category) ? req.body.category : [req.body.category];
+  const { name, link, isFavorite, category, icon } = req.body;
+  const categories = Array.isArray(category) ? category : [category];
+
   try {
     const existingLink = await Links.findOne({ slug });
-    const updatedIcon = req.body.icon ? req.body.icon : existingLink.icon;
+    const formattedLink = link.startsWith('http') ? link : `https://${link}`; //Add http if not present
+
+    let iconURL;
+
+    if (icon && icon !== '') {
+      iconURL = icon;
+    } else if (existingLink && existingLink.icon) {
+      iconURL = existingLink.icon;
+    } else {
+      iconURL = await fetchFavicon(formattedLink);
+    }
 
     const updatedLink = {
-      name: req.body.name,
-      link: req.body.link,
-      icon: updatedIcon,
+      name: name,
+      link: formattedLink,
+      icon: iconURL,
       category: categories,
+      isFavorite: isFavorite === 'on',
     };
 
     await Links.findOneAndUpdate({ slug }, updatedLink, { runValidators: true, new: true });
-    res.redirect('/');
+    res.redirect('/resources');
   } catch (error) {
     console.error(error);
     res.render('links/error');
   }
 });
 
-// Delete
+//Delete item
 router.delete('/:slug', async (req, res) => {
   const { slug } = req.params;
   console.log('Deleting link with slug:', slug);

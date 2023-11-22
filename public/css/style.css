@@ -69,7 +69,6 @@
   font-weight: 700;
   text-transform: uppercase;
 }
-
 /* ==========================Add Button======================= */
 
 .plusButton {
@@ -161,7 +160,7 @@
 }
 
 .edit-button:hover {
-  width: 120px;
+  width: 90px;
   border-radius: 50px;
   transition-duration: 0.3s;
   background-color: rgba(33, 37, 41, 1);
@@ -226,7 +225,7 @@
 }
 
 .delete-button:hover {
-  width: 120px;
+  width: 90px;
   border-radius: 50px;
   transition-duration: 0.3s;
   background-color: rgba(33, 37, 41, 1);
@@ -406,3 +405,16 @@ body {
   /* transform: translateY(-30px); */
   transition-duration: 0.3s;
 }
+/* ===========================Favorites button====================== */
+
+.favorite-button-container {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  z-index: 1;
+}
+
+.favorites {
+  background-color: none;
+}
+
