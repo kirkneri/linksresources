@@ -63,20 +63,30 @@ router.post('/remove-from-favorites/:id', async (req, res) => {
 });
 
 
-//Display all resources and filter
+// Display all resources, filter, and search results
 router.get('/resources', async (req, res) => {
   try {
-  const { category } = req.query;
-    let links;
+    const { category, keyword } = req.query;
+
+    let query = {}; // Create an empty query object
+
     if (category && category.length > 0) {
-      links = await Links.find({ category: { $in: Array.isArray(category) ? category : [category] } });
-    } else {
-      links = await Links.find({});
+      query.category = { $in: Array.isArray(category) ? category : [category] };
     }
 
+    if (keyword && keyword.trim() !== '') {
+      query.name = { $regex: keyword.trim(), $options: 'i' }; // Use regular expression to perform a case-insensitive search on the 'name' field
+    }
+
+    const links = await Links.find(query);
     const allCategories = await Links.distinct('category');
 
-    res.render('links/resources', { links, selectedCategory: category, allCategories });
+    res.render('links/resources', {
+      links,
+      selectedCategory: category,
+      allCategories,
+      keyword,
+    });
   } catch (error) {
     console.error(error);
     res.render('links/error');
@@ -176,9 +186,9 @@ router.put('/:slug', async (req, res) => {
     if (icon && icon !== '') {
       iconURL = icon;
     } else if (existingLink && existingLink.icon) {
-      iconURL = existingLink.icon;
-    } else {
       iconURL = await fetchFavicon(formattedLink);
+    } else {
+      iconURL = existingLink.icon;
     }
 
     const updatedLink = {
@@ -211,5 +221,19 @@ router.delete('/:slug', async (req, res) => {
     res.render('links/error');
   }
 });
+
+//Delete multiple items
+router.post('/delete-multiple', async (req, res) => {
+  const linkIds = req.body.linkIds;
+
+  try {
+    await Links.deleteMany({ _id: { $in: linkIds } });
+    res.redirect('/resources');
+  } catch (error) {
+    console.error(error);
+    res.render('links/error');
+  }
+});
+
 
 module.exports = router;
