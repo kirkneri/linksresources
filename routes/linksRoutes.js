@@ -103,7 +103,7 @@ async function fetchFavicon(link, icon) {
     if (icon && icon !== '') {
       return icon;
     } else {
-      const faviconResponse = await axios.get(`https://www.google.com/s2/favicons?domain=${domain}&sz=128`, { responseType: 'arraybuffer' });
+      const faviconResponse = await axios.get(`https://www.google.com/s2/favicons?domain=${domain}&sz=256`, { responseType: 'arraybuffer' });
 
       const faviconURL = Buffer.from(faviconResponse.data, 'binary').toString('base64');
       return `data:${faviconResponse.headers['content-type']};base64,${faviconURL}`;
