@@ -7,19 +7,21 @@ background-repeat:no-repeat">
     background-color: rgba(255, 255, 255, 0.45);
     border-radius: 12px;
     border: 1px solid rgba(209, 213, 219, 0.3);">
-            <div class="lc-block">
+            <!-- <div class="lc-block">
                 <div editable="rich">
                     <h2 class="fw-bolder display-3">Source Kode</h2>
                 </div>
-            </div>
+            </div> -->
             <div class="lc-block col-md-12">
                 <div editable="rich">
-                    <p class="lead">Discover the Code Symphony: Your gateway to a world of frontend finesse and backend brilliance! Source Kode curates an array of resources for web development enthusiasts, offering a treasure trove of links spanning both frontend and backend realms. Dive into a universe of coding possibilities and elevate your projects with our meticulously curated collection.
-                    </p>
+                  <% jokes.forEach(joke => { %>
+                    <p class="lead"> <%= joke.setup %></p>
+                    <p class="lead"> <%= joke.punchline %></p>
+                  <% }); %>
                 </div>
-            </div>
+              </div>              
             <div class="lc-block">
-                <a class="btn btn-dark" href="/resources" role="button">Add Resources Now</a>
+                <a class="btn btn-dark" href="/resources" role="button">New Joke</a>
             </div>
         </div>
     </div>

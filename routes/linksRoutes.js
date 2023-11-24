@@ -63,35 +63,57 @@ router.post('/remove-from-favorites/:id', async (req, res) => {
 });
 
 
-// Display all resources, filter, and search results
+//Display all resources, filter, and search results
 router.get('/resources', async (req, res) => {
   try {
     const { category, keyword } = req.query;
 
-    let query = {}; // Create an empty query object
+    const options = {
+      method: 'GET',
+      url: 'https://dad-jokes.p.rapidapi.com/random/joke',
+      headers: {
+        'X-RapidAPI-Key': '596ebaa8e9msh46eea9ad2049120p1e5a3bjsn88969e26e6cc',
+        'X-RapidAPI-Host': 'dad-jokes.p.rapidapi.com'
+      }
+    };
+    
+    let query = {};
 
     if (category && category.length > 0) {
       query.category = { $in: Array.isArray(category) ? category : [category] };
     }
 
     if (keyword && keyword.trim() !== '') {
-      query.name = { $regex: keyword.trim(), $options: 'i' }; // Use regular expression to perform a case-insensitive search on the 'name' field
+      query.name = { $regex: keyword.trim(), $options: 'i' };
     }
 
     const links = await Links.find(query);
     const allCategories = await Links.distinct('category');
+
+    let jokes = []; // Initialize jokes outside the inner try block
+
+    try {
+      const response = await axios.request(options);
+      jokes = response.data.body;
+      console.log(response.data);
+    } catch (error) {
+      console.error(error);
+      // Handle error or set jokes to a default value if needed
+    }
 
     res.render('links/resources', {
       links,
       selectedCategory: category,
       allCategories,
       keyword,
+      jokes: jokes
     });
   } catch (error) {
     console.error(error);
     res.render('links/error');
   }
 });
+
 
 
 //Function to fetch favicon with formatted link
