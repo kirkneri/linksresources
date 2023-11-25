@@ -68,7 +68,7 @@ router.post('/remove-from-favorites/:id', async (req, res) => {
   }
 });
 
-
+//Display resources favorites categories and search
 router.get('/resources', async (req, res) => {
   try {
     const locals = {
@@ -91,10 +91,10 @@ router.get('/resources', async (req, res) => {
     const linksCount = await Links.countDocuments(query);
     const totalPages = Math.ceil(linksCount / limit);
 
-    const currentPage = Math.min(Math.max(page, 1), totalPages); // Ensure current page is within valid range
+    const currentPage = Math.min(Math.max(page, 1), totalPages);
 
     const startIndex = (currentPage - 1) * limit;
-    const endIndex = Math.min(startIndex + limit, linksCount);
+    // const endIndex = Math.min(startIndex + limit, linksCount);
 
     const links = await Links.find(query).limit(limit).skip(startIndex);
 
@@ -126,7 +126,7 @@ router.get('/resources', async (req, res) => {
       favoriteLinks,
       pagination,
       totalPages,
-      currentPage, // Send current page to handle active class in pagination UI if needed
+      currentPage,
       locals
     });
   } catch (error) {
@@ -157,7 +157,7 @@ async function fetchFavicon(link, icon) {
 }
 
 //Add item with formatted link and fetching favicon
-router.post('/', async (req, res) => {
+router.post('/resources', async (req, res) => {
   const { name, link, isFavorite, category, icon } = req.body;
   const categories = Array.isArray(category) ? category : [category];
 
@@ -206,14 +206,18 @@ router.get('/edit/:slug', async (req, res) => {
   const { slug } = req.params;
   try {
     const updateLink = await Links.findOne({ slug });
-    res.render('links/edit', { updateLink });
+    const locals = {
+      title: updateLink.name,
+      description: 'Kirk and Henry MP2'
+    }
+    res.render('links/edit', { updateLink, locals });
   } catch (error) {
     console.error(error);
     res.render('links/error');
   }
 });
 
-//Update item
+
 router.put('/:slug', async (req, res) => {
   const { slug } = req.params;
   const { name, link, isFavorite, category, icon } = req.body;

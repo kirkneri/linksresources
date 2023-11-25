@@ -27,7 +27,7 @@
   <div class="col-md-12">
     <div class="container">
       <div class="row">
-        <div class="col-6">
+        <div class="col-md-6 mb-3">
           <form class="d-flex justify-content-start gap-2" action="/resources" method="GET">
             <% allCategories.forEach(cat => { %>
               <button class="btn btn-outline-secondary" type="submit" name="category" value="<%= cat %>"><%= cat %></button>
@@ -35,8 +35,8 @@
             <button class="btn btn-outline-secondary" type="submit" name="category" value="">All</button>
           </form>
         </div>
-        <div class="col-6">
-          <nav class="container" aria-label="Page navigation example">
+        <div class="col-md-6 mb-3">
+          <nav aria-label="Page navigation example">
             <ul class="pagination justify-content-end">
               <li class="page-item <%= pagination.prev ? '' : 'disabled' %>">
                 <% if (pagination.prev) { %>

@@ -78,6 +78,7 @@ const Notes = require('../models/note');
     }
   });
   
+  //Remove to favorites
   router.post('/remove-from-favorites-notes/:id', async (req, res) => {
     const noteId = req.params.id;
   
@@ -96,19 +97,23 @@ const Notes = require('../models/note');
   });
   
 
-
+// Show note
 router.get('/show/:slug', async (req, res) => {
     const { slug } = req.params;
     try {
         const showNote = await Notes.findOne({ slug });
-        res.render('notes/showNotes', { showNote });
+        const locals = {
+          title: showNote.title,
+          description: 'Kirk and Henry MP2'
+        }
+        res.render('notes/showNotes', { showNote, locals });
     } catch (err) {
         console.error(err);
         res.render('links/error');
     }
 });
 
-
+// Add notes
 router.post('/notes', async (req, res) => {
     try {
         const { title, body, createdAt } = req.body;
@@ -126,12 +131,16 @@ router.post('/notes', async (req, res) => {
     }
 });
 
-
+// Update notes
 router.get('/edit-notes/:slug', async (req, res) => {
     const { slug } = req.params;
     try {
         const updatedNote = await Notes.findOne({ slug });
-        res.render('notes/editNotes', { updatedNote });
+        const locals = {
+          title: updatedNote.title,
+          description: 'Kirk and Henry MP2'
+        }
+        res.render('notes/editNotes', { updatedNote, locals });
     } catch (error) {
         console.error(error);
         res.render('links/error');
@@ -160,6 +169,7 @@ router.put('/notes/:slug', async (req, res) => {
     }
 });
 
+/// Delete notes
 router.delete('/notes/:slug', async (req, res) => {
     const { slug } = req.params;
     console.log('Deleting link with slug:', slug);

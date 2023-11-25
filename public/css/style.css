@@ -279,6 +279,10 @@ hr {
   background-color: black;
 }
 
+.show-note {
+  height: 100vh;
+}
+
 /* =====================Delete Card================ */
 .delete-card {
   width: 300px;
