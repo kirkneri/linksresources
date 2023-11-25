@@ -61,7 +61,7 @@
                 <ul class="pagination justify-content-end">
                   <li class="page-item <%= pagination.prev ? '' : 'disabled' %>">
                     <% if (pagination.prev) { %>
-                      <a href="/resources?page=<%= pagination.prev.page %>&limit=<%= pagination.prev.limit %>" class="page-link text-dark">Previous</a>
+                      <a href="/notes?page=<%= pagination.prev.page %>&limit=<%= pagination.prev.limit %>" class="page-link text-dark">Previous</a>
                     <% } else { %>
                       <span class="page-link text-dark">Previous</span>
                     <% } %>
@@ -71,7 +71,7 @@
                   <% } %> -->
                   <li class="page-item <%= pagination.next ? '' : 'disabled' %>">
                     <% if (pagination.next) { %>
-                      <a href="/resources?page=<%= pagination.next.page %>&limit=<%= pagination.next.limit %>" class="page-link text-dark">Next</a>
+                      <a href="/notes?page=<%= pagination.next.page %>&limit=<%= pagination.next.limit %>" class="page-link text-dark">Next</a>
                     <% } else { %>
                       <span class="page-link text-dark">Next</span>
                     <% } %>

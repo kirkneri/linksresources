@@ -12,7 +12,7 @@ const Notes = require('../models/note');
       }
 
       let query = {};
-      const { notekeyword, page = 1, limit = 10 } = req.query;
+      const { notekeyword, page = 1, limit = 12 } = req.query;
 
       if (notekeyword) {
         query = { title: { $regex: new RegExp(notekeyword, 'i') } };
