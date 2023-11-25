@@ -1,0 +1,42 @@
+<!-- Add Notes -->
+<div class="modal fade" id="addNote" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="addItem">Add a Note</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="/notes" method="POST">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="title" name="title" placeholder="What's on your mind?" required>
+                    <label for="title">What's on your mind?</label>
+                </div>
+                <div class="mt-2">
+                    <textarea class="form-control" name="body" id="body" cols="30" rows="10" required></textarea>
+                </div>
+                <div class="mt-2">
+                    <button type="submit" class="btn btn-dark d-flex ms-auto">Submit</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- <div class="modal fade" id="alertModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Alert</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <p>Please select at least one category!</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div> -->

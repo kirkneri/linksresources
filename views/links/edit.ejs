@@ -1,6 +1,3 @@
-<%- include('../partials/head.ejs'); %>
-<%- include('../partials/nav.ejs'); %>
-
 <!-- Update Modal -->
 <div class="container mt-5">
   <a href="/resources" class="back-button text-decoration-none">
@@ -20,15 +17,31 @@
           <input type="text" value="<%= updateLink.icon %>" class="form-control rounded-3" id="icon" name="icon" placeholder="Image URL">
           <label for="icon">Image URL</label>
         </div>
-        <div class="form-check btn-group d-flex justify-content-between mb-2 me-4" aria-required="true">
-          <input type="checkbox" class="btn-check form-check-input" id="frontend" name="category" value="Frontend">
-          <label class="btn btn-outline-dark" for="frontend">Frontend</label>
+        <div class="form-check d-flex justify-content-between mb-2 me-4">
+          <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+            <input type="checkbox" class="btn-check form-check-input" id="frontend" name="category" value="Frontend">
+            <label class="btn btn-outline-dark w-100 mb-2" for="frontend">Frontend</label>
+          </div>
         
-          <input type="checkbox" class="btn-check form-check-input" id="backend" name="category" value="Backend">
-          <label class="btn btn-outline-dark" for="backend">Backend</label>
-
-          <input type="checkbox" class="btn-check form-check-input" id="others" name="category" value="Others">
-          <label class="btn btn-outline-dark" for="others">Others</label>
+          <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+            <input type="checkbox" class="btn-check form-check-input" id="backend" name="category" value="Backend">
+            <label class="btn btn-outline-dark w-100 mb-2" for="backend">Backend</label>
+          </div>
+        
+          <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+            <input type="checkbox" class="btn-check form-check-input" id="documentation" name="category" value="Documentation">
+            <label class="btn btn-outline-dark w-100 mb-2" for="documentation">Documentation</label>
+          </div>
+        
+          <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+            <input type="checkbox" class="btn-check form-check-input" id="forums" name="category" value="Forums">
+            <label class="btn btn-outline-dark w-100 mb-2" for="forums">Forums</label>
+          </div>
+        
+          <div class="col-lg-2 col-md-3 col-sm-4 col-6 mb-2">
+            <input type="checkbox" class="btn-check form-check-input" id="others" name="category" value="Others">
+            <label class="btn btn-outline-dark w-100 mb-2" for="others">Others</label>
+          </div>
         </div>
           <button class="col-auto mb-2 btn rounded-3 btn-dark" type="submit">Update Link</button>
       </form>
@@ -51,5 +64,3 @@
     </div>
   </div>
 </div>
-
-  <%- include('../partials/footer.ejs'); %>

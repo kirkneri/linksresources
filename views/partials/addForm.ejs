@@ -1,6 +1,6 @@
 <!-- Add Modal -->
 <div class="modal fade" id="addItem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="addItem">Add a Resource</h1>
@@ -20,17 +20,35 @@
             <input type="text" class="form-control rounded-3" id="icon" name="icon" placeholder="Image URL">
             <label for="icon">Image URL</label>
           </div>
-          <div class="form-check btn-group d-flex justify-content-between mb-2 me-4">
-            <input type="checkbox" class="btn-check form-check-input" id="frontend" name="category" value="Frontend">
-            <label class="btn btn-outline-dark" for="frontend">Frontend</label>
+          <div class="form-check d-flex flex-wrap justify-content-center mb-2 me-4">
+            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-2">
+              <input type="checkbox" class="btn-check form-check-input" id="frontend" name="category" value="Frontend">
+              <label class="btn btn-outline-dark w-100 text-truncate" for="frontend">Frontend</label>
+            </div>
           
-            <input type="checkbox" class="btn-check form-check-input" id="backend" name="category" value="Backend">
-            <label class="btn btn-outline-dark" for="backend">Backend</label>
-            
-            <input type="checkbox" class="btn-check form-check-input" id="others" name="category" value="Others">
-            <label class="btn btn-outline-dark" for="others">Others</label>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-2">
+              <input type="checkbox" class="btn-check form-check-input" id="backend" name="category" value="Backend">
+              <label class="btn btn-outline-dark w-100 mb-2 text-wrap" for="backend">Backend</label>
+            </div>
+          
+            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-2">
+              <input type="checkbox" class="btn-check form-check-input" id="documentation" name="category" value="Documentation">
+              <label class="btn btn-outline-dark w-100 mb-2 text-wrap" for="documentation">Documentation</label>
+            </div>
+          
+            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-2">
+              <input type="checkbox" class="btn-check form-check-input" id="forums" name="category" value="Forums">
+              <label class="btn btn-outline-dark w-100 mb-2 text-wrap" for="forums">Forums</label>
+            </div>
+          
+            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-2">
+              <input type="checkbox" class="btn-check form-check-input" id="others" name="category" value="Others">
+              <label class="btn btn-outline-dark w-100 mb-2 text-wrap" for="others">Others</label>
+            </div>
           </div>
-          <button class="w-100 mb-2 btn btn-lg rounded-3 btn-dark" type="submit">Add Link</button>
+          <div class="d-flex justify-content-center">
+            <button class="w-25 mb-2 btn rounded-3 btn-dark" type="submit">Add Link</button>
+          </div>
         </form>
       </div>
     </div>

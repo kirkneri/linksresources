@@ -16,8 +16,14 @@ const extractDomain = (url) => {
 //Getting favorite links
 router.get('/', async (req, res) => {
   try {
-    const favoriteLinks = await Links.find({ isFavorite: true });
-    res.render('links/main', { favoriteLinks });
+    const locals = {
+      title: 'Source Kode',
+      description: 'Kirk and Henry MP2'
+    }
+
+    const quotesResponse = await axios.get('https://zenquotes.io/api/random');
+    const quotes = quotesResponse.data;
+    res.render('links/main', { locals, quotes });
   } catch (error) {
     console.error(error);
     res.render('links/error');
@@ -52,7 +58,7 @@ router.post('/remove-from-favorites/:id', async (req, res) => {
     if (linkToRemoveFromFavorites) {
       linkToRemoveFromFavorites.isFavorite = false;
       await linkToRemoveFromFavorites.save();
-      res.redirect('/');
+      res.redirect('/resources');
     } else {
       res.render('links/error');
     }
@@ -63,57 +69,71 @@ router.post('/remove-from-favorites/:id', async (req, res) => {
 });
 
 
-//Display all resources, filter, and search results
 router.get('/resources', async (req, res) => {
   try {
-    const { category, keyword } = req.query;
+    const locals = {
+      title: 'Resources',
+      description: 'Kirk and Henry MP2'
+    }
 
-    const options = {
-      method: 'GET',
-      url: 'https://dad-jokes.p.rapidapi.com/random/joke',
-      headers: {
-        'X-RapidAPI-Key': '596ebaa8e9msh46eea9ad2049120p1e5a3bjsn88969e26e6cc',
-        'X-RapidAPI-Host': 'dad-jokes.p.rapidapi.com'
-      }
-    };
-    
-    let query = {};
+    const { category, linkeyword, page = 1, limit = 12 } = req.query;
+
+    const query = {};
 
     if (category && category.length > 0) {
       query.category = { $in: Array.isArray(category) ? category : [category] };
     }
 
-    if (keyword && keyword.trim() !== '') {
-      query.name = { $regex: keyword.trim(), $options: 'i' };
+    if (linkeyword && linkeyword.trim() !== '') {
+      query.name = { $regex: linkeyword.trim(), $options: 'i' };
     }
 
-    const links = await Links.find(query);
+    const linksCount = await Links.countDocuments(query);
+    const totalPages = Math.ceil(linksCount / limit);
+
+    const currentPage = Math.min(Math.max(page, 1), totalPages); // Ensure current page is within valid range
+
+    const startIndex = (currentPage - 1) * limit;
+    const endIndex = Math.min(startIndex + limit, linksCount);
+
+    const links = await Links.find(query).limit(limit).skip(startIndex);
+
+    const pagination = {};
+    const safePage = (page) => Math.min(Math.max(page, 1), totalPages);
+
+    if (safePage(currentPage + 1) <= totalPages) {
+      pagination.next = {
+        page: safePage(currentPage + 1),
+        limit: limit
+      };
+    }
+
+    if (safePage(currentPage - 1) > 0) {
+      pagination.prev = {
+        page: safePage(currentPage - 1),
+        limit: limit
+      };
+    }
+
+    const favoriteLinks = await Links.find({ isFavorite: true });
     const allCategories = await Links.distinct('category');
-
-    let jokes = []; // Initialize jokes outside the inner try block
-
-    try {
-      const response = await axios.request(options);
-      jokes = response.data.body;
-      console.log(response.data);
-    } catch (error) {
-      console.error(error);
-      // Handle error or set jokes to a default value if needed
-    }
 
     res.render('links/resources', {
       links,
       selectedCategory: category,
       allCategories,
-      keyword,
-      jokes: jokes
+      linkeyword,
+      favoriteLinks,
+      pagination,
+      totalPages,
+      currentPage, // Send current page to handle active class in pagination UI if needed
+      locals
     });
   } catch (error) {
     console.error(error);
     res.render('links/error');
   }
 });
-
 
 
 //Function to fetch favicon with formatted link
@@ -201,16 +221,17 @@ router.put('/:slug', async (req, res) => {
 
   try {
     const existingLink = await Links.findOne({ slug });
-    const formattedLink = link.startsWith('http') ? link : `https://${link}`; //Add http if not present
+    
+    const formattedLink = (link && typeof link === 'string' && link.trim() !== '' && link.startsWith('http')) ? link : `https://${link}`;
 
     let iconURL;
 
     if (icon && icon !== '') {
       iconURL = icon;
     } else if (existingLink && existingLink.icon) {
-      iconURL = await fetchFavicon(formattedLink);
+      iconURL = existingLink.icon;  
     } else {
-      iconURL = existingLink.icon;
+      iconURL = '';
     }
 
     const updatedLink = {
@@ -229,6 +250,7 @@ router.put('/:slug', async (req, res) => {
   }
 });
 
+
 //Delete item
 router.delete('/:slug', async (req, res) => {
   const { slug } = req.params;
@@ -237,19 +259,6 @@ router.delete('/:slug', async (req, res) => {
   try {
     const deletedLink = await Links.findOneAndDelete({ slug });
     console.log('Deleted Link:', deletedLink);
-    res.redirect('/resources');
-  } catch (error) {
-    console.error(error);
-    res.render('links/error');
-  }
-});
-
-//Delete multiple items
-router.post('/delete-multiple', async (req, res) => {
-  const linkIds = req.body.linkIds;
-
-  try {
-    await Links.deleteMany({ _id: { $in: linkIds } });
     res.redirect('/resources');
   } catch (error) {
     console.error(error);

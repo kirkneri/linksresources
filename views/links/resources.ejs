@@ -1,32 +1,63 @@
-<%- include('../partials/head.ejs'); %>
-<%- include('../partials/nav.ejs'); %>
-<%- include('../partials/hero.ejs'); %>
-
-<div class="d-flex resources-style me-5">
-  <div class="ms-auto">
-    <form class="input-group" action="/resources/" method="GET">
-      <input class="form-control" type="text" name="keyword" aria-label="Search by resource name" aria-describedby="search-resource" placeholder="Search by resource name">
-      <button class="btn btn-outline-secondary" type="submit" id="search-resource">Search</button>
+<div class="d-flex justify-content-center align-self-center resources-style mb-5">
+  <div class="container">
+    <form class="input-group" action="/resources" method="GET">
+      <input class="form-control" type="text" name="linkeyword" aria-label="Search by website name" aria-describedby="search-resources" placeholder="Search by website name">
+      <button class="btn btn-outline-secondary" type="submit" id="search-resources">Search</button>
+      <button class="btn btn-outline-secondary" type="button" onclick="window.location.href='/resources'"><i class="fa-regular fa-window-restore"></i></button>
     </form>
   </div>
 </div>
-<div class="row mt-3">
-  <div class="col ms-4">
-    <form class="d-flex flex-column-reverse gap-2" action="/resources" method="GET">
-      <% allCategories.forEach(cat => { %>
-        <button class="btn btn-outline-secondary" type="submit" name="category" value="<%= cat %>"><%= cat %></button>
-      <% }) %>
-      <button class="btn btn-outline-secondary" type="submit" name="category" value="">All</button>
-    </form>
+<div>
+  <div class="container">
+    <div tabindex="0" type="button" class="plusButton" data-bs-toggle="modal" data-bs-target="#addItem">
+      <svg class="plusIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+        <g mask="url(#mask0_21_345)">
+          <path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z"></path>
+        </g>
+      </svg>
+    </div>
+    <h1>Favorite Resources</h1>
   </div>
-  <div class="col-md-10">
+</div>
+<%- include('../partials/linkFavorites.ejs'); %>
+<div class="container">
+  <hr>
+</div>
+<div class="row">
+  <div class="col-md-12">
     <div class="container">
-      <div tabindex="0" type="button" class="plusButton" data-bs-toggle="modal" data-bs-target="#addItem">
-        <svg class="plusIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
-          <g mask="url(#mask0_21_345)">
-            <path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z"></path>
-          </g>
-        </svg>
+      <div class="row">
+        <div class="col-6">
+          <form class="d-flex justify-content-start gap-2" action="/resources" method="GET">
+            <% allCategories.forEach(cat => { %>
+              <button class="btn btn-outline-secondary" type="submit" name="category" value="<%= cat %>"><%= cat %></button>
+            <% }) %>
+            <button class="btn btn-outline-secondary" type="submit" name="category" value="">All</button>
+          </form>
+        </div>
+        <div class="col-6">
+          <nav class="container" aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+              <li class="page-item <%= pagination.prev ? '' : 'disabled' %>">
+                <% if (pagination.prev) { %>
+                  <a href="/resources?page=<%= pagination.prev.page %>&limit=<%= pagination.prev.limit %>" class="page-link text-dark">Previous</a>
+                <% } else { %>
+                  <span class="page-link text-dark">Previous</span>
+                <% } %>
+              </li>
+              <!-- <% for (let i = 1; i <= totalPages; i++) { %>
+                <li class="page-item"><a class="page-link text-dark" href="/resources?page=<%= i %>&limit=<%= pagination.limit %>"><%= i %></a></li>
+              <% } %> -->
+              <li class="page-item <%= pagination.next ? '' : 'disabled' %>">
+                <% if (pagination.next) { %>
+                  <a href="/resources?page=<%= pagination.next.page %>&limit=<%= pagination.next.limit %>" class="page-link text-dark">Next</a>
+                <% } else { %>
+                  <span class="page-link text-dark">Next</span>
+                <% } %>
+              </li>
+            </ul>
+          </nav>  
+        </div>
       </div>
       <div class="row">
         <% links.forEach(link => { %>
@@ -58,6 +89,8 @@
     </div>
   </div>
 </div>
+<div class="pagination">
+</div>
+
 <%- include('../partials/addForm.ejs'); %>
 <%- include('../partials/delete.ejs'); %>
-<%- include('../partials/footer.ejs'); %>

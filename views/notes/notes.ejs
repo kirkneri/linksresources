@@ -1,0 +1,140 @@
+<div class="d-flex justify-content-center align-self-center resources-style mb-5">
+    <div class="container">
+      <form class="input-group" action="/notes" method="GET">
+        <input class="form-control" type="text" name="notekeyword" aria-label="Search by title" aria-describedby="search-notes" placeholder="Search by title">
+        <button class="btn btn-outline-secondary" type="submit" id="search-notes">Search</button>
+        <button class="btn btn-outline-secondary" type="button" onclick="window.location.href='/notes'"><i class="fa-regular fa-window-restore"></i></button>
+      </form>
+    </div>
+  </div>
+  <div>
+    <div class="container">
+      <div tabindex="0" type="button" class="plusButton" data-bs-toggle="modal" data-bs-target="#addNote">
+        <svg class="plusIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+          <g mask="url(#mask0_21_345)">
+            <path d="M13.75 23.75V16.25H6.25V13.75H13.75V6.25H16.25V13.75H23.75V16.25H16.25V23.75H13.75Z"></path>
+          </g>
+        </svg>
+      </div>
+      <h1>Favorite Notes</h1>
+      <div class="row">
+      <% favoriteNotes.forEach(note => { %>
+      <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3 mt-3">
+          <div class="card-custom">
+          <article class="card-container">
+              <header class="card-container-header">
+                  <span class="card-container-title">
+                  <svg aria-hidden="true" height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0 0h24v24H0z" fill="none"></path>
+                      <path d="M14 9V4H5v16h6.056c.328.417.724.785 1.18 1.085l1.39.915H3.993A.993.993 0 0 1 3 21.008V2.992C3 2.455 3.449 2 4.002 2h10.995L21 8v1h-7zm-2 2h9v5.949c0 .99-.501 1.916-1.336 2.465L16.5 21.498l-3.164-2.084A2.953 2.953 0 0 1 12 16.95V11zm2 5.949c0 .316.162.614.436.795l2.064 1.36 2.064-1.36a.954.954 0 0 0 .436-.795V13h-5v3.949z" fill="currentColor"></path>
+                  </svg>
+                  <a href="/show/<%= note.slug %>" class="text-decoration-none"><%= note.title %></a>
+                  </span>
+                  <form class="favorites" action="/remove-from-favorites-notes/<%= note._id %>" method="POST">                 
+                  <button class="icon-button">
+                  <svg height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M0 0h24v24H0z" fill="none"></path>
+                      <path d="M12 10.586l4.95-4.95 1.414 1.414-4.95 4.95 4.95 4.95-1.414 1.414-4.95-4.95-4.95 4.95-1.414-1.414 4.95-4.95-4.95-4.95L7.05 5.636z" fill="currentColor"></path>
+                  </svg>
+                  </button>
+                </form>
+              </header>
+              <section class="card-container-body rtf">
+                  <span><%= note.createdAt.toLocaleDateString() %></span>
+                  <p><%= note.body %></p>
+              </section>
+          </article>
+          </div>
+      </div>
+      <% }) %>
+    </div>
+  </div> 
+  <div class="container">
+    <hr>
+  </div>
+  <div class="row mt-3">
+    <div class="col-md-12">
+      <div class="container">
+          <div class="row">
+            <div>
+              <nav class="container" aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                  <li class="page-item <%= pagination.prev ? '' : 'disabled' %>">
+                    <% if (pagination.prev) { %>
+                      <a href="/resources?page=<%= pagination.prev.page %>&limit=<%= pagination.prev.limit %>" class="page-link text-dark">Previous</a>
+                    <% } else { %>
+                      <span class="page-link text-dark">Previous</span>
+                    <% } %>
+                  </li>
+                  <!-- <% for (let i = 1; i <= totalPages; i++) { %>
+                    <li class="page-item"><a class="page-link text-dark" href="/resources?page=<%= i %>&limit=<%= pagination.limit %>"><%= i %></a></li>
+                  <% } %> -->
+                  <li class="page-item <%= pagination.next ? '' : 'disabled' %>">
+                    <% if (pagination.next) { %>
+                      <a href="/resources?page=<%= pagination.next.page %>&limit=<%= pagination.next.limit %>" class="page-link text-dark">Next</a>
+                    <% } else { %>
+                      <span class="page-link text-dark">Next</span>
+                    <% } %>
+                  </li>
+                </ul>
+              </nav>  
+            </div>
+            <% notes.forEach(note => { %>
+            <div class="col-lg-3 col-md-4 col-sm-6 col-12 mb-3 mt-3">
+              <div class="card-custom">
+                <article class="card-container">
+                    <header class="card-container-header">
+                      <span class="card-container-title">
+                        <svg aria-hidden="true" height="24" width="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path d="M0 0h24v24H0z" fill="none"></path>
+                          <path d="M14 9V4H5v16h6.056c.328.417.724.785 1.18 1.085l1.39.915H3.993A.993.993 0 0 1 3 21.008V2.992C3 2.455 3.449 2 4.002 2h10.995L21 8v1h-7zm-2 2h9v5.949c0 .99-.501 1.916-1.336 2.465L16.5 21.498l-3.164-2.084A2.953 2.953 0 0 1 12 16.95V11zm2 5.949c0 .316.162.614.436.795l2.064 1.36 2.064-1.36a.954.954 0 0 0 .436-.795V13h-5v3.949z" fill="currentColor"></path>
+                        </svg>
+                        <a href="/show/<%= note.slug %>" class="text-decoration-none"><%= note.title %></a>
+                      </span> 
+                      <form action="/add-to-favorites-notes/<%= note._id %>" method="POST"><button class="icon-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 384 512"><path d="M0 48C0 21.5 21.5 0 48 0l0 48V441.4l130.1-92.9c8.3-6 19.6-6 27.9 0L336 441.4V48H48V0H336c26.5 0 48 21.5 48 48V488c0 9-5 17.2-13 21.3s-17.6 3.4-24.9-1.8L192 397.5 37.9 507.5c-7.3 5.2-16.9 5.9-24.9 1.8S0 497 0 488V48z"/></svg>
+                      </button></form>
+                    </header>
+                    <section class="card-container-body rtf">
+                      <span><%= note.createdAt.toLocaleDateString() %></span>
+                      <p><%= note.body %></p>
+                    </section>
+                  <footer class="card-container-footer">
+                    <a href="/edit-notes/<%= note.slug %>" type="button" class="button is-ghost"><i class="fa-solid fa-pen-to-square"></i></a>
+                    <a onclick="openConfirmationModal('<%= note.slug %>')" class="button is-primary"><i class="fa-solid fa-trash-can"></i></a>
+                  </footer>
+                </article>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+      </div>
+    </div>
+  </div>
+
+
+  <%- include('../partials/addNotes.ejs'); %>
+
+  <!-- Delete Modal -->
+<% notes.forEach(note => { %>
+  <div class="modal fade" id="confirmationModal_<%= note.slug %>" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Are you sure you want to delete <%= note.title %>?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <form id="deleteForm_<%= note.slug %>" action="/notes/<%= note.slug %>?_method=DELETE" method="POST">
+            <button type="button" class="btn btn-danger" onclick="confirmDelete('<%= note.slug %>')">Delete</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+<% }) %>

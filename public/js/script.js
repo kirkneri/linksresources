@@ -1,4 +1,4 @@
-//===========================Delete Modal=========================
+//===========================Delete Link Modal=========================
 function openConfirmationModal(linkId) {
     $(`#confirmationModal_${linkId}`).modal('show');
     console.log(linkId);
@@ -9,18 +9,6 @@ function openConfirmationModal(linkId) {
   }
 
 //========================Category validation======================
-  // function validateCategories() {
-  //   const checkboxes = document.querySelectorAll('input[name="category"]:checked');
-    
-  //   // Check if at least one checkbox is checked
-  //   if (checkboxes.length < 1) {
-  //     alert('Please select at least one category!');
-  //     return false;
-  //   }
-    
-  //   return true;
-  // }
-
   function validateCategories() {
     const checkboxes = document.querySelectorAll('input[name="category"]:checked');
     
@@ -34,3 +22,16 @@ function openConfirmationModal(linkId) {
     
     return true; // Allow form submission
   }
+
+//========================Delete Note Modal======================
+
+  function openConfirmationModal(noteId) {
+    $(`#confirmationModal_${noteId}`).modal('show');
+    console.log(noteId);
+  }
+
+  function confirmDelete(noteId) {
+    document.getElementById(`deleteForm_${noteId}`).submit();
+  }
+
+//========================Delete Note Modal======================
