@@ -78,7 +78,7 @@ const Notes = require('../models/note');
     }
   });
   
-  //Remove to favorites
+  //Remove from favorites
   router.post('/remove-from-favorites-notes/:id', async (req, res) => {
     const noteId = req.params.id;
   
