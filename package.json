@@ -6,6 +6,7 @@
   "engines": {
     "node": "20.x"
   },
+  "type": "module",
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js"
