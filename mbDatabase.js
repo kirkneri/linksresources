@@ -1,9 +1,9 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 
 const connectDB = async () => {
   try {
-    await mongoose.connect('mongodb+srv://devkirkbugayong:qwerty123@kodego.btziqza.mongodb.net/linksResource');
-    console.log('MongoDB connection established.');
+    await mongoose.connect(process.env.MONGO_URI);
   } catch (err) {
     console.error('Error connecting to MongoDB:', err.message);
     process.exit(1);
